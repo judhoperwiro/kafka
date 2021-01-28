@@ -160,7 +160,7 @@
     - name: 23. Insert myid File
       lineinfile:
         path: /data/kafkadata/zookeeper/myid
-        line: {{ myid }}
+        line: "{{ myid }}"
 
     - name: 24. Insert Bashrc File
       lineinfile:
