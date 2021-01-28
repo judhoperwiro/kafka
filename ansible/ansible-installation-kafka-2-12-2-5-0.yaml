@@ -24,8 +24,11 @@
         group: kafka
         expires: -1
         home: /home/kafka
+        
+    - name: 04. set users password valid time
+      shell: chage -I -1 -m 0 -M 99999 -E -1 kafka
 
-    - name: 04. prepare Source dir
+    - name: 05. prepare Source dir
       file:
         path: /Source
         owner: redhat
@@ -33,20 +36,19 @@
         mode: 0777
         state: directory
 
-    - name: 05. transfer kafka_2.12-2.5.0.tgz file
+    - name: 06. transfer kafka_2.12-2.5.0.tgz file
       copy:
         src: /data/ansible/kafka/source/kafka_2.12-2.5.0.tgz
         dest: /Source
-      tags: tf
 
-    - name: 06. Extract tar files
+    - name: 07. Extract tar files
       unarchive:
         src: /Source/kafka_2.12-2.5.0.tgz
         dest: /Source
         mode: 0755
         remote_src: yes
 
-    - name: 07. prepare Source dir
+    - name: 08. prepare Source dir
       file:
         path: "{{ item }}"
         owner: kafka
@@ -58,10 +60,10 @@
         - /data/kafkadata/zookeeper
         - /data/kafkadata/kafka-logs
 
-    - name: 08. Move kafka file
+    - name: 09. Move kafka file
       shell: cp -r /Source/kafka_2.12-2.5.0/* /data/kafkadata/kafka-bin/
 
-    - name: 09. Change Ownership of kafka-data
+    - name: 10. Change Ownership of kafka-data
       file:
         path: /data/kafkadata/kafka-bin/
         owner: kafka
@@ -70,19 +72,19 @@
         state: directory
         recurse: yes
 
-    - name: 10. Edit zookeeper.properties [dataDir]
+    - name: 11. Edit zookeeper.properties [dataDir]
       lineinfile:
         path: /data/kafkadata/kafka-bin/config/zookeeper.properties
         regexp: '^dataDir'
         line: dataDir=/data/kafkadata/zookeeper
 
-    - name: 10. Edit zookeeper.properties [dataDir]
+    - name: 12. Edit zookeeper.properties [dataDir]
       lineinfile:
         path: /data/kafkadata/kafka-bin/config/zookeeper.properties
         regexp: '^admin.enableServer'
         line: admin.enableServer=true
 
-    - name: 11. Update zookeeper.properties [zookeeper cluster]
+    - name: 13. Update zookeeper.properties [zookeeper cluster]
       blockinfile:
         path: /data/kafkadata/kafka-bin/config/zookeeper.properties
         block: |
@@ -92,64 +94,62 @@
           server.0={{ hostname_01 }}:2888:3888
           server.1={{ hostname_02 }}:2888:3888
           server.2={{ hostname_03 }}:2888:3888
-      tags: new
 
-    - name: 13. Edit server.properties [log.dirs]
+    - name: 14. Edit server.properties [log.dirs]
       lineinfile:
         path: /data/kafkadata/kafka-bin/config/server.properties
         regexp: '^broker.id'
         line: broker.id={{ broker_id }}
 
-    - name: 12. Edit server.properties [listeners]
+    - name: 15. Edit server.properties [listeners]
       lineinfile:
         path: /data/kafkadata/kafka-bin/config/server.properties
         regexp: '^#listeners=PLAINTEXT://:9092'
         insertafter: '^#listeners=PLAINTEXT://:9092'
         line: listeners=PLAINTEXT://{{ hostname }}:9092
-      tags: new
 
-    - name: 13. Edit server.properties [log.dirs]
+    - name: 16. Edit server.properties [log.dirs]
       lineinfile:
         path: /data/kafkadata/kafka-bin/config/server.properties
         regexp: '^log.dirs'
         line: log.dirs=/data/kafkadata/kafka-logs
 
 
-    - name: 14. Edit server.properties [num.partitions]
+    - name: 17. Edit server.properties [num.partitions]
       lineinfile:
         path: /data/kafkadata/kafka-bin/config/server.properties
         regexp: '^num.partitions'
         line: num.partitions=3
 
 
-    - name: 15. Edit server.properties [offsets.topic.replication.factor]
+    - name: 18. Edit server.properties [offsets.topic.replication.factor]
       lineinfile:
         path: /data/kafkadata/kafka-bin/config/server.properties
         regexp: '^offsets.topic.replication.factor'
         line: offsets.topic.replication.factor=3
 
 
-    - name: 16. Edit server.properties [transaction.state.log.replication.factor]
+    - name: 19. Edit server.properties [transaction.state.log.replication.factor]
       lineinfile:
         path: /data/kafkadata/kafka-bin/config/server.properties
         regexp: '^transaction.state.log.replication.factor'
         line: transaction.state.log.replication.factor=3
 
 
-    - name: 17. Edit server.properties [transaction.state.log.min.isr]
+    - name: 20. Edit server.properties [transaction.state.log.min.isr]
       lineinfile:
         path: /data/kafkadata/kafka-bin/config/server.properties
         regexp: '^transaction.state.log.min.isr'
         line: transaction.state.log.min.isr=3
 
-    - name: 18. Edit server.properties [zookeeper.connect]
+    - name: 21. Edit server.properties [zookeeper.connect]
       lineinfile:
         path: /data/kafkadata/kafka-bin/config/server.properties
         regexp: '^zookeeper.connect='
         line: zookeeper.connect={{ hostname_01 }}:2181,{{ hostname_02 }}:2181,{{ hostname_03 }}:2181
       tags: new
 
-    - name: 19. Create myid File
+    - name: 22. Create myid File
       file:
         path: /data/kafkadata/zookeeper/myid
         owner: kafka
@@ -157,12 +157,12 @@
         mode: 0750
         state: touch
 
-    - name: 20. Insert myid File
+    - name: 23. Insert myid File
       lineinfile:
         path: /data/kafkadata/zookeeper/myid
         line: {{ myid }}
 
-    - name: 21. Insert Bashrc File
+    - name: 24. Insert Bashrc File
       lineinfile:
         path: /home/kafka/.bashrc
         line: |
