@@ -1,0 +1,18 @@
+#################KAFKA#######################
+
+hostname ansible_host=hostname hostname=hostname-machine-01 broker_id=0 myid=0
+hostname ansible_host=hostname hostname=hostname-machine-02 broker_id=1 myid=3
+hostname ansible_host=hostname hostname=hostname-machine-03 broker_id=2 myid=3
+
+[kafka]
+hostname-machine-01
+hostname-machine-02
+hostname-machine-03
+
+[kafka:vars]
+ansible_user=redhat
+ansible_ssh_pass=redhat
+ansible_sudo_pass=redhat
+hostname_01=hostname-machine-01
+hostname_02=hostname-machine-02
+hostname_03=hostname-machine-03
