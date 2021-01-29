@@ -169,8 +169,9 @@
           export KAFKA_HOME=/data/kafkadata/kafka-bin
           export PATH=$PATH:$KAFKA_HOME/bin
 
-#    - name: 22. Update Bashrc File
-#      become_user: kafka
-#      command: source .bashrc
-#      args:
-#        chdir: /home/kafka/
+    - name: source bashrc
+      become_user: kafka  
+      shell: source ~/.bashrc 
+      args:
+        chdir: /home/kafka
+        executable: /bin/bash
