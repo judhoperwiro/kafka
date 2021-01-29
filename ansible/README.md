@@ -16,9 +16,3 @@ vi inventory
 ```shell 
 ansible-playbook -i inventory install-kafka-2-5-0.yaml
 ```
-### 3.) Limitation  
-Before start kafka, execute command manually
-```shell 
-su - kafka
-source .bashrc
-```
