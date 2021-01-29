@@ -169,8 +169,27 @@
           export KAFKA_HOME=/data/kafkadata/kafka-bin
           export PATH=$PATH:$KAFKA_HOME/bin
 
-#    - name: 22. Update Bashrc File
-#      become_user: kafka
-#      command: source .bashrc
-#      args:
-#        chdir: /home/kafka/
+    - name: 25. source bashrc
+      become_user: kafka  
+      shell: source ~/.bashrc 
+      args:
+        chdir: /home/kafka
+        executable: /bin/bash
+
+    - name: 26. Add port to firewalld
+      firewalld:
+        port: "{{ item }}"
+        permanent: yes
+        state: enabled
+      with_items:
+        - 2888/tcp
+        - 3888/tcp
+        - 9092/tcp
+        - 2181/tcp
+      tags: start
+
+    - name: 27. reload service firewalld
+      systemd:
+        name: firewalld
+        state: reloaded
+      tags: start
