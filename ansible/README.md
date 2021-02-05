@@ -19,5 +19,5 @@ ansible-playbook -i inventory install-kafka-2-5-0.yaml
 
 ### 3.) Limitiation  
 ```shell 
-Cannot start kafka and create Database and Tablespace using ansible
+Cannot start kafka using ansible
 ```
