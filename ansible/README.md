@@ -16,8 +16,8 @@ vi inventory
 ```shell 
 ansible-playbook -i inventory-<username> install-postgres-12-1.yaml
 ```
+
 ### 3.) Limitiation  
 ```shell 
 Cannot start kafka and create Database and Tablespace using ansible
 ```
-
